@@ -1,21 +1,20 @@
 package com.longhike.distributed_systems.map_reduce;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
-
-import com.longhike.common.Pair;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MapReduce {
   private final int numReducers;
-  private final Pair<String, Integer> circuitBreaker;
-  private final Map<String, Integer> outputMap;
+  private final SimpleEntry<String, Integer> circuitBreaker;
+  private final ConcurrentHashMap<String, Integer> outputMap;
   private final File[] textFiles;
 
   public MapReduce(int numReducers, File[] textFiles) {
     this.numReducers = numReducers;
-    this.circuitBreaker = new Pair<>(null, -1);
-    this.outputMap = new HashMap<>();
+    this.circuitBreaker = new SimpleEntry<>(null, -1);
+    this.outputMap = new ConcurrentHashMap<>();
     this.textFiles = textFiles;
   }
 
@@ -33,13 +32,16 @@ public class MapReduce {
     }
 
     /**
-     * span mapper threads, then block
+     * spawn mapper threads, then block
      * the main thread execution until they complete
      */
     for (int i = 0; i < mappers.length; i++) {
       mapperThreads[i] = new Thread(mappers[i]);
       mapperThreads[i].start();
-      mapperThreads[i].join();
+    }
+
+    for (Thread mt : mapperThreads) {
+      mt.join();
     }
 
     /**

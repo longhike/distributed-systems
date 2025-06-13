@@ -2,8 +2,6 @@ package com.longhike.distributed_systems;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,21 +17,18 @@ public class DistributedSystemsApplication {
     SpringApplication.run(DistributedSystemsApplication.class, args);
     
     // MAP REDUCE
-    mapReduce();
+    doMapReduce();
   }
 
-  private static void mapReduce() {
+  private static void doMapReduce() {
     try {
       Resource[] resources = new PathMatchingResourcePatternResolver().getResources("classpath:map_reduce/*.txt");
-      List<File> filesList = new ArrayList<>();
+      File[] files = new File[resources.length];
 
-      for (Resource resource : resources) {
-        filesList.add(resource.getFile());
+      for (int i = 0; i < resources.length; i++) {
+        files[i] = resources[i].getFile();
       }
-
-      File[] files = filesList.toArray(new File[0]);
-      var mapReduce = new MapReduce(8, files);
-      mapReduce.execute();
+      new MapReduce(8, files).execute();
     } catch (IOException e) {
       e.printStackTrace();
     } catch (InterruptedException e) {

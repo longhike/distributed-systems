@@ -5,8 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
-
-import com.longhike.common.Pair;
+import java.util.AbstractMap.SimpleEntry;
 
 public class Mapper implements Runnable {
 
@@ -28,7 +27,7 @@ public class Mapper implements Runnable {
         while (tokenizer.hasMoreTokens()) {
           // for the purposes of this example, no need to further process strings
           String word = tokenizer.nextToken().toLowerCase();
-          Pair<String,Integer> entry = new Pair<>(word, 1);
+          SimpleEntry<String,Integer> entry = new SimpleEntry<>(word, 1);
           reducers[Math.abs(word.hashCode()) % this.reducers.length].put(entry);
         }
       }
