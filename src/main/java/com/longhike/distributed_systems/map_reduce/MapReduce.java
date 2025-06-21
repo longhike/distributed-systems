@@ -3,18 +3,17 @@ package com.longhike.distributed_systems.map_reduce;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.longhike.common.Pair;
+import java.util.AbstractMap.SimpleEntry;
 
 public class MapReduce {
   private final int numReducers;
-  private final Pair<String, Integer> circuitBreaker;
+  private final SimpleEntry<String, Integer> circuitBreaker;
   private final Map<String, Integer> outputMap;
   private final File[] textFiles;
 
   public MapReduce(int numReducers, File[] textFiles) {
     this.numReducers = numReducers;
-    this.circuitBreaker = new Pair<>(null, -1);
+    this.circuitBreaker = new SimpleEntry<>(null, -1);
     this.outputMap = new HashMap<>();
     this.textFiles = textFiles;
   }
