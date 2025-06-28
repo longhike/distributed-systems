@@ -1,10 +1,10 @@
-package com.longhike.distributed_systems.kv_store;
+package com.longhike.kvstore;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.longhike.distributed_systems.kv_store.error.EntryVersionIncorrectException;
-import com.longhike.distributed_systems.kv_store.error.NoEntryForKeyException;
+import com.longhike.kvstore.error.EntryVersionIncorrectException;
+import com.longhike.kvstore.error.NoEntryForKeyException;
 
 public class Server {
   private static final ConcurrentHashMap<String, Entry> store = new ConcurrentHashMap<>();

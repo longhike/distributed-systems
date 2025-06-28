@@ -1,4 +1,4 @@
-package com.longhike.distributed_systems.web_crawler;
+package com.longhike.webcrawler;
 
 import java.io.IOException;
 import java.util.ArrayList;

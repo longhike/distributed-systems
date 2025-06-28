@@ -1,4 +1,4 @@
-package com.longhike.distributed_systems.kv_store;
+package com.longhike.kvstore;
 
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -6,27 +6,26 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class KVStore {
-    // Common pool of 1000 keys
-    private static final String[] KEYS = new String[1000];
+    private static final int NUM_KEYS = 1000;
+    private static final int NUM_THREADS = 100;
+    private static final int NUM_ITERATIONS_PER_CLIENT = 1000;
+    private static final String[] KEYS = new String[NUM_KEYS];
     
-    // Initialize keys
     static {
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < NUM_KEYS; i++) {
             KEYS[i] = "key-" + i;
         }
     }
     
-    public static void doKVStore() {
+    public static void main(String[] args) {
         System.out.println("Starting KV Store stress test with 100 clients...");
         
-        // Create and start 100 client threads
-        ExecutorService executor = Executors.newFixedThreadPool(100);
+        ExecutorService executor = Executors.newFixedThreadPool(NUM_THREADS);
         
         for (int i = 0; i < 100; i++) {
             executor.submit(new ClientTask(i));
         }
         
-        // Run for a specified duration
         executor.shutdown();
         try {
             if (!executor.awaitTermination(5, TimeUnit.MINUTES)) {
@@ -38,7 +37,7 @@ public class KVStore {
             executor.shutdownNow();
         }
         
-        System.out.println("KV Store stress test completed");
+        System.out.println("Stress test completed");
     }
     
     static class ClientTask implements Runnable {
@@ -56,16 +55,13 @@ public class KVStore {
             try {
                 System.out.println("Client " + clientId + " started");
                 
-                // Run operations for a specified number of iterations
-                for (int i = 0; i < 1000; i++) {
-                    // Randomly choose between get and put operations
+                for (int i = 0; i < NUM_ITERATIONS_PER_CLIENT; i++) {
                     if (random.nextBoolean()) {
                         performGet();
                     } else {
                         performPut();
                     }
                     
-                    // Small delay between operations to prevent CPU saturation
                     Thread.sleep(random.nextInt(10));
                 }
                 
@@ -79,7 +75,6 @@ public class KVStore {
         private void performGet() {
             String key = KEYS[random.nextInt(KEYS.length)];
             Entry entry = client.get(key);
-            // Simple logging for demonstration
             if (entry != null) {
                 System.out.println("Client " + clientId + " GET: " + key + " = " + entry.getValue() + " (v" + entry.getVersion() + ")");
             } else {
@@ -91,7 +86,6 @@ public class KVStore {
             String key = KEYS[random.nextInt(KEYS.length)];
             String value = generateValue();
             
-            // First try to get the current version
             Entry currentEntry = client.get(key);
             int version = (currentEntry != null) ? currentEntry.getVersion() : 0;
             
@@ -100,9 +94,8 @@ public class KVStore {
         }
         
         private String generateValue() {
-            // Generate a dynamic value that includes client ID, timestamp, etc.
             return "client-" + clientId + "-time-" + System.currentTimeMillis() + 
-                   "-random-" + random.nextInt(1000);
+                   "-random-" + random.nextInt(NUM_KEYS);
         }
     }
 }
