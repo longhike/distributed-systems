@@ -1,4 +1,4 @@
-package com.longhike.distributed_systems.web_crawler;
+package com.longhike.webcrawler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +16,8 @@ public class WebCrawler {
   private final String BASE_URL = "https://en.wikipedia.org/wiki";
   private final int THREAD_COUNT = 50;
 
-  public WebCrawler() {
+  public static void main(String[] args) {
+    new WebCrawler().crawl("https://en.wikipedia.org/wiki/England", "https://en.wikipedia.org/wiki/Jesus");
   }
 
   public void crawl(String startingPoint, String target) {

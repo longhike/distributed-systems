@@ -1,4 +1,4 @@
-package com.longhike.distributed_systems.kv_store;
+package com.longhike.kvstore;
 
 public final class Entry {
   private String value;

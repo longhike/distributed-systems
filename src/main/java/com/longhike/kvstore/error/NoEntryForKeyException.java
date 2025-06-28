@@ -1,4 +1,4 @@
-package com.longhike.distributed_systems.kv_store.error;
+package com.longhike.kvstore.error;
 
 public class NoEntryForKeyException extends Exception {
   public NoEntryForKeyException(String key) {

@@ -1,4 +1,4 @@
-package com.longhike.distributed_systems.map_reduce;
+package com.longhike.mapreduce;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,7 +1,7 @@
-package com.longhike.distributed_systems.kv_store;
+package com.longhike.kvstore;
 
-import com.longhike.distributed_systems.kv_store.error.EntryVersionIncorrectException;
-import com.longhike.distributed_systems.kv_store.error.NoEntryForKeyException;
+import com.longhike.kvstore.error.EntryVersionIncorrectException;
+import com.longhike.kvstore.error.NoEntryForKeyException;
 
 public class Client {
   public Entry get(String key) {

@@ -1,6 +1,5 @@
-package com.longhike.distributed_systems.map_reduce;
+package com.longhike.mapreduce;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.AbstractMap.SimpleEntry;
@@ -9,18 +8,27 @@ public class MapReduce {
   private final int numReducers;
   private final SimpleEntry<String, Integer> circuitBreaker;
   private final Map<String, Integer> outputMap;
-  private final File[] textFiles;
+  private final String[] texts;
 
-  public MapReduce(int numReducers, File[] textFiles) {
+  public static void main(String[] args) {
+    try {
+      new MapReduce(8).execute();
+    } catch (InterruptedException exception) {
+      System.out.println(exception.getMessage());
+    }
+
+  }
+
+  public MapReduce(int numReducers) {
     this.numReducers = numReducers;
     this.circuitBreaker = new SimpleEntry<>(null, -1);
     this.outputMap = new HashMap<>();
-    this.textFiles = textFiles;
+    this.texts = Sources.texts;
   }
 
   public void execute() throws InterruptedException {
     Reducer[] reducers = getReducers();
-    Mapper[] mappers = getMappers(reducers, textFiles);
+    Mapper[] mappers = getMappers(reducers, texts);
 
     Thread[] reducerThreads = new Thread[reducers.length];
     Thread[] mapperThreads = new Thread[mappers.length];
@@ -32,8 +40,8 @@ public class MapReduce {
     }
 
     /**
-     * span mapper threads, then block
-     * the main thread execution until they complete
+     * spawn mapper threads, then block
+     * the main thread's execution until they complete
      */
     for (int i = 0; i < mappers.length; i++) {
       mapperThreads[i] = new Thread(mappers[i]);
@@ -69,10 +77,10 @@ public class MapReduce {
     return reducers;
   }
 
-  private Mapper[] getMappers(Reducer[] reducers, File[] files) {
-    Mapper[] mappers = new Mapper[files.length];
-    for (int i = 0; i < files.length; i++) {
-      mappers[i] = new Mapper(files[i], reducers);
+  private Mapper[] getMappers(Reducer[] reducers, String[] texts) {
+    Mapper[] mappers = new Mapper[texts.length];
+    for (int i = 0; i < texts.length; i++) {
+      mappers[i] = new Mapper(texts[i], reducers);
     }
     return mappers;
   }
