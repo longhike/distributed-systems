@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import com.longhike.distributed_systems.kv_store.KVStore;
 import com.longhike.distributed_systems.map_reduce.MapReduce;
 import com.longhike.distributed_systems.web_crawler.WebCrawler;
 
@@ -22,7 +23,9 @@ public class DistributedSystemsApplication {
     // MAP REDUCE
     // doMapReduce();
     // WEB CRAWL
-    doWebCrawl();
+    // doWebCrawl();
+    // KV STORE
+    doKVStore();
   }
 
   private static void mapReduce() {
@@ -46,5 +49,9 @@ public class DistributedSystemsApplication {
 
   private static void doWebCrawl() {
     new WebCrawler().crawl("https://en.wikipedia.org/wiki/England", "https://en.wikipedia.org/wiki/Jesus");
+  }
+
+  private static void doKVStore() {
+    KVStore.doKVStore();
   }
 }
