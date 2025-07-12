@@ -2,6 +2,11 @@ package com.longhike.mapreduce;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.AbstractMap.SimpleEntry;
 
 public class MapReduce {
@@ -30,43 +35,30 @@ public class MapReduce {
     Reducer[] reducers = getReducers();
     Mapper[] mappers = getMappers(reducers, texts);
 
-    Thread[] reducerThreads = new Thread[reducers.length];
-    Thread[] mapperThreads = new Thread[mappers.length];
+    // Executor services for mapper and reducer tasks
+    ExecutorService mapperExecutor = Executors.newFixedThreadPool(texts.length);
+    ExecutorService reducerExecutor = Executors.newFixedThreadPool(numReducers);
 
-    // spawn reducer threads
-    for (int i = 0; i < reducers.length; i++) {
-      reducerThreads[i] = new Thread(reducers[i]);
-      reducerThreads[i].start();
-    }
+    // submit the mapper and reducer tasks to their respective executors
+    List<Future<?>> reducerFutures = submitTasks(reducerExecutor, reducers);
+    List<Future<?>> mapperFutures = submitTasks(mapperExecutor, mappers);
+    
+    // cleanup
+    mapperExecutor.shutdown();
+    reducerExecutor.shutdown();
 
-    /**
-     * spawn mapper threads, then block
-     * the main thread's execution until they complete
-     */
-    for (int i = 0; i < mappers.length; i++) {
-      mapperThreads[i] = new Thread(mappers[i]);
-      mapperThreads[i].start();
-      mapperThreads[i].join();
-    }
-
-    /**
-     * enque the circuitbreaker on the reducers once mappers complete
-     */
+    // block main thread until all mappers have completed
+    waitForAll(mapperFutures);
+    // enqueue circuit breaker on reducers
     for (Reducer reducer : reducers) {
       reducer.put(circuitBreaker);
     }
+    // block main thread until all reducers have completed
+    waitForAll(reducerFutures);
 
-    /**
-     * block main thread execution until reducers complete
-     */
-    for (Thread reducerThread : reducerThreads) {
-      reducerThread.join();
-    }
-
-    System.out.println("------------------------------");
-    for (Map.Entry<String, Integer> entry : outputMap.entrySet()) {
-      System.out.println(entry.getKey() + ": " + entry.getValue());
-    }
+    // print result
+    System.out.println("------------- RESULTS!! -----------------");
+    outputMap.forEach((k, v) -> System.out.println(k + ": " + v));
   }
 
   private Reducer[] getReducers() {
@@ -83,5 +75,24 @@ public class MapReduce {
       mappers[i] = new Mapper(texts[i], reducers);
     }
     return mappers;
+  }
+
+  private List<Future<?>> submitTasks(ExecutorService executor, Runnable[] tasks) {
+    List<Future<?>> futures = new ArrayList<>();
+    for (Runnable task : tasks) {
+      futures.add(executor.submit(task));
+    }
+    return futures;
+  }
+
+  private void waitForAll(List<Future<?>> futures) throws InterruptedException {
+    for (Future<?> future : futures) {
+      try {
+        future.get();
+      } catch (Exception e) {
+        Thread.currentThread().interrupt();
+        throw new InterruptedException("Task execution failed: " + e.getMessage());
+      }
+    }
   }
 }
