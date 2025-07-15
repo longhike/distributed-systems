@@ -1,6 +1,19 @@
 # distributed-systems
-Practice and learn distributed systems programming and architecture
 
-*NOTE*: each package in this class has its own `main` class, named after the package, with its own `public static void main (String[] args)` method. This is not meant to be packaged for production, nor is it meant to be run outside an IDE.
+This is a hands-on exploration of core distributed systems concepts, where core functionalities are implemented using only the Java standard library.
 
-If I continue to expand this, maybe I'll make them into modules later.
+The goal is to understand the fundamentals behind tools I often use by rebuilding them from first principles.
+
+### Contents
+
+**MapReduce**: simplified MapReduce framework with worker coordination
+
+**KVStore**: basic distributed key-value store
+
+**WebCrawler**: a distributed crawler with concurrent agents that finds the shortest Wikipedia link-path from a starting-point to a target page
+  - in this project, I'm using an external library (`jsoup`) to parse HTML
+
+**Raft** [*in progress*]: a full Raft consensus implementation
+
+
+### This projects in this repository for learning, not production.
