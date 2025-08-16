@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -21,7 +20,17 @@ public class UrlExtractor {
       Set<String> set = new HashSet<>();
       for (Element element : elements) {
         String url = element.attr("abs:href");
-        if (url.startsWith(startWith) && !url.contains("#")) {
+        if (url.startsWith(startWith)
+            && !url.contains("#")
+            && !url.contains("_(identifier)")
+            && !url.contains("Wikipedia:Link_rot")
+            && !url.contains("Special:")
+            && !url.contains("Help:")
+            && !url.contains("Category:")
+            && !url.contains("Wikipedia:")
+            && !url.contains("File:")
+            && !url.contains("Portal:")
+            && !url.contains("Main_Page")) {
           set.add(url);
         }
       }
