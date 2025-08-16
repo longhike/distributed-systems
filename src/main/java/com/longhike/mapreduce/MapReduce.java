@@ -1,13 +1,13 @@
 package com.longhike.mapreduce;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.AbstractMap.SimpleEntry;
 
 public class MapReduce {
   private final int numReducers;
@@ -21,7 +21,6 @@ public class MapReduce {
     } catch (InterruptedException exception) {
       System.out.println(exception.getMessage());
     }
-
   }
 
   public MapReduce(int numReducers) {
@@ -42,7 +41,7 @@ public class MapReduce {
     // submit the mapper and reducer tasks to their respective executors
     List<Future<?>> reducerFutures = submitTasks(reducerExecutor, reducers);
     List<Future<?>> mapperFutures = submitTasks(mapperExecutor, mappers);
-    
+
     // cleanup
     mapperExecutor.shutdown();
     reducerExecutor.shutdown();

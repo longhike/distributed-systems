@@ -1,7 +1,7 @@
 package com.longhike.mapreduce;
 
-import java.util.StringTokenizer;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.StringTokenizer;
 
 public class Mapper implements Runnable {
 
@@ -23,7 +23,5 @@ public class Mapper implements Runnable {
       SimpleEntry<String, Integer> entry = new SimpleEntry<>(word, 1);
       reducers[Math.abs(word.hashCode()) % this.reducers.length].put(entry);
     }
-
   }
-
 }
