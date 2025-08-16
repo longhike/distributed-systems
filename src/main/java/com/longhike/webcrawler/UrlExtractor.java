@@ -30,7 +30,9 @@ public class UrlExtractor {
             && !url.contains("Wikipedia:")
             && !url.contains("File:")
             && !url.contains("Portal:")
-            && !url.contains("Main_Page")) {
+            && !url.contains("Main_Page")
+            && !url.contains("Template:")
+            && !url.contains("Template_talk:")) {
           set.add(url);
         }
       }
