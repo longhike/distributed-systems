@@ -31,5 +31,4 @@ public class Client {
       putWithRetry(key, value, ++version, ++tryCount);
     }
   }
-
 }

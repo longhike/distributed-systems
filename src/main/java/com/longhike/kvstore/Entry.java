@@ -28,20 +28,14 @@ public final class Entry {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
     Entry other = (Entry) obj;
     if (value == null) {
-      if (other.value != null)
-        return false;
-    } else if (!value.equals(other.value))
-      return false;
-    if (version != other.version)
-      return false;
+      if (other.value != null) return false;
+    } else if (!value.equals(other.value)) return false;
+    if (version != other.version) return false;
     return true;
   }
 }
